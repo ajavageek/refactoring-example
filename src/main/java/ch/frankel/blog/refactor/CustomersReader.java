@@ -12,8 +12,14 @@ import java.io.IOException;
 
 public class CustomersReader {
 
+    private final ConfigurationService configurationService;
+
+    public CustomersReader(ConfigurationService configurationService) {
+        this.configurationService = configurationService;
+    }
+
     public JSONObject read() throws IOException {
-        String url = Configuration.getCustomersUrl();
+        String url = configurationService.getCustomersUrl();
         CloseableHttpClient client = HttpClients.createDefault();
         HttpGet get = new HttpGet(url);
         try (CloseableHttpResponse response = client.execute(get)) {

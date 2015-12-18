@@ -19,12 +19,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 public class CustomersReaderTest {
 
+    @Mock private ConfigurationService configurationService;
     @Mock private CloseableHttpClient client;
     @Mock private CloseableHttpResponse response;
     @Mock private HttpEntity entity;
@@ -33,14 +33,13 @@ public class CustomersReaderTest {
 
     @Before
     public void setUp() {
-        customersReader = new CustomersReader();
+        customersReader = new CustomersReader(configurationService);
     }
 
     @Test
-    @PrepareForTest({Configuration.class, HttpClients.class})
+    @PrepareForTest(HttpClients.class)
     public void should_return_json() throws IOException {
-        mockStatic(Configuration.class, HttpClients.class);
-        when(Configuration.getCustomersUrl()).thenReturn("crap://test");
+        when(configurationService.getCustomersUrl()).thenReturn("crap://test");
         when(HttpClients.createDefault()).thenReturn(client);
         when(client.execute(any(HttpUriRequest.class))).thenReturn(response);
         when(response.getEntity()).thenReturn(entity);
